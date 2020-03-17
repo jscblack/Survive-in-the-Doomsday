@@ -1,6 +1,6 @@
 /*
  * @Author: Gehrychiang
- * @LastEditTime: 2020-03-17 20:01:53
+ * @LastEditTime: 2020-03-17 20:13:07
  * @Website: www.yilantingfeng.site
  * @E-mail: gehrychiang@aliyun.com
  */
@@ -10,7 +10,7 @@
 int main()
 {
     wiringPiSetup();
-    pinMode(0, INPUT);
+    pinMode(LED, OUTPUT);
     for (int i = 1; i <= 10; i++)
     {
         digitalWrite(LED, 1);
@@ -19,5 +19,6 @@ int main()
         delay(1000);
         printf("%d\n", i);
     }
+    pinMode(LED, INPUT);
     return 0;
 }
