@@ -1,27 +1,19 @@
 /*
  * @Author: Gehrychiang
- * @LastEditTime: 2020-03-17 14:43:11
+ * @LastEditTime: 2020-03-17 14:55:12
  * @Website: www.yilantingfeng.site
  * @E-mail: gehrychiang@aliyun.com
  */
-//this is a test
 #include <stdio.h>
 #include <wiringPi.h>
-#include <ads1115.h>
-#define LED 1
 int main()
 {
     wiringPiSetup();
-    pinMode(LED, OUTPUT);
-    digitalWrite(LED, 1);
-    printf("111\n");
-    delay(1000);
-    digitalWrite(LED, 0);
-    delay(1000);
-    digitalWrite(LED, 1);
-    printf("222\n");
-    delay(1000);
-    digitalWrite(LED, 0);
-    pinMode(LED, INPUT);
+    pinMode(0, INPUT);
+    for (int i = 0; i < 10; i++)
+    {
+        printf("%d\n", digitalRead(0));
+        delay(2000);
+    }
     return 0;
 }
