@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "D:/mingw64/lib",
+                "E:/c&c++ workspace/.vscode/WiringPi-master/wiringPi"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "D:\\mingw64\\bin\\gcc.exe",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}
