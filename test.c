@@ -1,9 +1,10 @@
 /*
  * @Author: Gehrychiang
- * @LastEditTime: 2020-03-17 11:07:57
+ * @LastEditTime: 2020-03-17 11:19:16
  * @Website: www.yilantingfeng.site
  * @E-mail: gehrychiang@aliyun.com
  */
+//this is a test
 #include <stdio.h>
 #include <wiringPi.h>
 #include <ads1115.h>
