@@ -1,6 +1,6 @@
 /*
  * @Author: Gehrychiang
- * @LastEditTime: 2020-03-17 14:38:37
+ * @LastEditTime: 2020-03-17 14:43:11
  * @Website: www.yilantingfeng.site
  * @E-mail: gehrychiang@aliyun.com
  */
@@ -11,7 +11,7 @@
 #define LED 1
 int main()
 {
-    wiringPiSetupGpio();
+    wiringPiSetup();
     pinMode(LED, OUTPUT);
     digitalWrite(LED, 1);
     printf("111\n");
