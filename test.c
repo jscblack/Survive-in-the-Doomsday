@@ -1,13 +1,13 @@
 /*
  * @Author: Gehrychiang
- * @LastEditTime: 2020-03-17 10:14:03
+ * @LastEditTime: 2020-03-17 10:18:22
  * @Website: www.yilantingfeng.site
  * @E-mail: gehrychiang@aliyun.com
  */
 #include <stdio.h>
 #include <wiringPi.h>
 #include <ads1115.h>
-#define LED 2
+#define LED 1
 int main()
 {
     wiringPiSetupGpio();
