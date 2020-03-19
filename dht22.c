@@ -1,7 +1,6 @@
-
 /*
  * @Author: Gehrychiang
- * @LastEditTime: 2020-03-19 22:16:43
+ * @LastEditTime: 2020-03-19 22:41:38
  * @Website: www.yilantingfeng.site
  * @E-mail: gehrychiang@aliyun.com
  */
@@ -41,18 +40,18 @@ int dht22_read_val()
                 break;
         }
         las = digitalRead(dht22); //read current state and store as last state.
-        if (cnt == 255)       //if dht always high for 255 + 1 times, break this for circle
+        if (cnt == 255)           //if dht always high for 255 + 1 times, break this for circle
             break;
         // top 3 transistions are ignored, maybe aim to wait for dht finish response signal
         if ((i >= 3) && (i % 2 == 1))
         {
             dht22_val[j / 8] <<= 1;    //write 1 bit to 0 by moving left (auto add 0)
-            if (cnt > 30)          //long mean 1(while short is shorter than 28)
+            if (cnt > 30)              //long mean 1(while short is shorter than 28)
                 dht22_val[j / 8] |= 1; //write 1 bit to 1
             j++;
         }
     }
-    //printf("i readed successfully\n");F
+    //printf("i readed successfully\n");
     // verify checksum and print the verified data
     if ((j == 40) && (dht22_val[4] == ((dht22_val[0] + dht22_val[1] + dht22_val[2] + dht22_val[3]) & 0xFF)))
     {
@@ -61,7 +60,7 @@ int dht22_read_val()
         h /= 10.0;
         f = (dht22_val[2] & 0x7F) * 256 + dht22_val[3];
         f /= 10.0;
-        if (dht22_val[2] & 0x80)
+        if (dht22_val[2] & 0x80) //whether below zero
             f *= -1;
         printf("Temp =  %.1f *C, Hum = %.1f %% \n", f, h);
         return 1;
@@ -73,10 +72,13 @@ int dht22_read_val()
     }
 }
 
-int main(void)
+int main()
 {
     if (wiringPiSetup() == -1)
-        exit(1);
+    {
+        exit(1); //fail to initialize, please to check the root
+    }
+
     for (int i = 0; i < 5;)
     {
         int res = dht22_read_val();
@@ -84,8 +86,7 @@ int main(void)
         {
             i++;
         }
-        delay(2500);
+        delay(2500); //accord to the doc,not recommend to read with an interval less than 2s
     }
-
     return 0;
 }
