@@ -1,6 +1,6 @@
 /*
  * @Author: Gehrychiang
- * @LastEditTime: 2020-03-19 20:36:58
+ * @LastEditTime: 2020-03-19 20:44:56
  * @Website: www.yilantingfeng.site
  * @E-mail: gehrychiang@aliyun.com
  */
@@ -8,39 +8,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#define MAX_TIME 100
-#define DHT11PIN 1                  //读取数据引脚
-#define ATTEMPTS 7                  //retry 5 times when no response
 int dht22_val[5] = {0, 0, 0, 0, 0}; //according to the docu 8 bit per group
 
-int dht11_read_val()
+int dht22_read_val()
 {
+    int dht22 = 1;
+    int max_time = 100;
     uint8_t las = HIGH; //last state
     uint8_t counter = 0;
     uint8_t j = 0, i;
-    for (i = 0; i < 5; i++)
-        dht22_val[i] = 0;
+    memset(dht22_val, 0, 40);
     //host send start signal
-    pinMode(DHT11PIN, OUTPUT);   //set pin to output
-    digitalWrite(DHT11PIN, LOW); //set to low at least 1ms
+    pinMode(dht22, OUTPUT);   //set pin to output
+    digitalWrite(dht22, LOW); //set to low at least 1ms
     delay(1);
-    digitalWrite(DHT11PIN, HIGH); //set to high 20-40us
+    digitalWrite(dht22, HIGH); //set to high 20-40us
     delayMicroseconds(30);
 
     //start recieve dht response
-    pinMode(DHT11PIN, INPUT); //set pin to input
-    for (i = 0; i < MAX_TIME; i++)
+    pinMode(dht22, INPUT); //set pin to input
+    for (i = 0; i < max_time; i++)
     {
         counter = 0;
-        while (digitalRead(DHT11PIN) == las)
+        while (digitalRead(dht22) == las)
         { //read pin state to see if dht responsed. if dht always high for 255 + 1 times, break this while circle
             counter++;
             delayMicroseconds(1);
             if (counter == 255)
                 break;
         }
-        las = digitalRead(DHT11PIN); //read current state and store as last state.
-        if (counter == 255)          //if dht always high for 255 + 1 times, break this for circle
+        las = digitalRead(dht22); //read current state and store as last state.
+        if (counter == 255)       //if dht always high for 255 + 1 times, break this for circle
             break;
         // top 3 transistions are ignored, maybe aim to wait for dht finish response signal
         if ((i >= 4) && (i % 2 == 0))
@@ -51,7 +49,7 @@ int dht11_read_val()
             j++;
         }
     }
-    printf("i readed successfully\n");
+    //printf("i readed successfully\n");
     // verify checksum and print the verified data
     if ((j >= 40) && (dht22_val[4] == ((dht22_val[0] + dht22_val[1] + dht22_val[2] + dht22_val[3]) & 0xFF)))
     {
@@ -67,28 +65,24 @@ int dht11_read_val()
     }
     else
     {
-        printf("i failed the check\n");
+        //printf("i failed the check\n");
         return 0;
     }
 }
 
 int main(void)
 {
-    int attempts = ATTEMPTS;
     if (wiringPiSetup() == -1)
         exit(1);
-    while (attempts--)
+    for (int i = 0; i < 20;)
     {
-        int res = dht11_read_val(); //get result including printing out
+        int res = dht22_read_val();
         if (res)
         {
-            break;
+            i++;
         }
-        delay(2500); //the sensor cannot work consistently
+        delay(2500);
     }
-    if (attempts <= 0)
-    {
-        printf("fail\n");
-    }
+
     return 0;
 }
