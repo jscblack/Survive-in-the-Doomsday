@@ -1,7 +1,7 @@
 
 /*
  * @Author: Gehrychiang
- * @LastEditTime: 2020-03-19 21:08:33
+ * @LastEditTime: 2020-03-19 22:16:43
  * @Website: www.yilantingfeng.site
  * @E-mail: gehrychiang@aliyun.com
  */
@@ -17,7 +17,7 @@ int dht22_read_val()
     int dht22 = 1;
     int max_time = 100;
     uint8_t las = LOW; //last state
-    uint8_t counter = 0;
+    uint8_t cnt = 0;
     uint8_t j = 0, i;
     memset(dht22_val, 0, 40);
 
@@ -32,22 +32,22 @@ int dht22_read_val()
     pinMode(dht22, INPUT); //set pin to input
     for (i = 0; i < max_time; i++)
     {
-        counter = 0; //for recording the lenth of HIGH and LOW
+        cnt = 0; //for recording the lenth of HIGH and LOW
         while (digitalRead(dht22) == las)
         { //read pin state to see if dht responsed. if dht always high for 255 + 1 times, break this while circle
-            counter++;
+            cnt++;
             delayMicroseconds(1);
-            if (counter == 255)
+            if (cnt == 255)
                 break;
         }
         las = digitalRead(dht22); //read current state and store as last state.
-        if (counter == 255)       //if dht always high for 255 + 1 times, break this for circle
+        if (cnt == 255)       //if dht always high for 255 + 1 times, break this for circle
             break;
         // top 3 transistions are ignored, maybe aim to wait for dht finish response signal
         if ((i >= 3) && (i % 2 == 1))
         {
             dht22_val[j / 8] <<= 1;    //write 1 bit to 0 by moving left (auto add 0)
-            if (counter > 30)          //long mean 1(while short is shorter than 28)
+            if (cnt > 30)          //long mean 1(while short is shorter than 28)
                 dht22_val[j / 8] |= 1; //write 1 bit to 1
             j++;
         }
