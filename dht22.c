@@ -1,6 +1,6 @@
 /*
  * @Author: Gehrychiang
- * @LastEditTime: 2020-03-19 20:22:37
+ * @LastEditTime: 2020-03-19 20:36:58
  * @Website: www.yilantingfeng.site
  * @E-mail: gehrychiang@aliyun.com
  */
@@ -9,17 +9,17 @@
 #include <stdlib.h>
 #include <stdint.h>
 #define MAX_TIME 100
-#define DHT11PIN 7 //读取数据引脚
-#define ATTEMPTS 5 //retry 5 times when no response
-int dht11_val[5] = {0, 0, 0, 0, 0};
+#define DHT11PIN 1                  //读取数据引脚
+#define ATTEMPTS 7                  //retry 5 times when no response
+int dht22_val[5] = {0, 0, 0, 0, 0}; //according to the docu 8 bit per group
 
 int dht11_read_val()
 {
-    uint8_t lststate = LOW; //last state
+    uint8_t las = HIGH; //last state
     uint8_t counter = 0;
     uint8_t j = 0, i;
     for (i = 0; i < 5; i++)
-        dht11_val[i] = 0;
+        dht22_val[i] = 0;
     //host send start signal
     pinMode(DHT11PIN, OUTPUT);   //set pin to output
     digitalWrite(DHT11PIN, LOW); //set to low at least 1ms
@@ -32,39 +32,35 @@ int dht11_read_val()
     for (i = 0; i < MAX_TIME; i++)
     {
         counter = 0;
-        while (digitalRead(DHT11PIN) == lststate)
+        while (digitalRead(DHT11PIN) == las)
         { //read pin state to see if dht responsed. if dht always high for 255 + 1 times, break this while circle
             counter++;
             delayMicroseconds(1);
             if (counter == 255)
                 break;
         }
-        lststate = digitalRead(DHT11PIN); //read current state and store as last state.
-        if (counter == 255)               //if dht always high for 255 + 1 times, break this for circle
+        las = digitalRead(DHT11PIN); //read current state and store as last state.
+        if (counter == 255)          //if dht always high for 255 + 1 times, break this for circle
             break;
         // top 3 transistions are ignored, maybe aim to wait for dht finish response signal
-        if (i < 2)
+        if ((i >= 4) && (i % 2 == 0))
         {
-            printf("%d\n", counter);
-        }
-        if ((i >= 2) && (i % 2 == 0))
-        {
-            dht11_val[j / 8] <<= 1;    //write 1 bit to 0 by moving left (auto add 0)
-            if (counter > 30)          //long mean 1
-                dht11_val[j / 8] |= 1; //write 1 bit to 1
+            dht22_val[j / 8] <<= 1;    //write 1 bit to 0 by moving left (auto add 0)
+            if (counter > 30)          //long mean 1(while short is shorter than 28)
+                dht22_val[j / 8] |= 1; //write 1 bit to 1
             j++;
         }
     }
     printf("i readed successfully\n");
     // verify checksum and print the verified data
-    if ((j >= 40) && (dht11_val[4] == ((dht11_val[0] + dht11_val[1] + dht11_val[2] + dht11_val[3]) & 0xFF)))
+    if ((j >= 40) && (dht22_val[4] == ((dht22_val[0] + dht22_val[1] + dht22_val[2] + dht22_val[3]) & 0xFF)))
     {
         float f, h;
-        h = dht11_val[0] * 256 + dht11_val[1];
+        h = dht22_val[0] * 256 + dht22_val[1];
         h /= 10;
-        f = (dht11_val[2] & 0x7F) * 256 + dht11_val[3];
+        f = (dht22_val[2] & 0x7F) * 256 + dht22_val[3];
         f /= 10.0;
-        if (dht11_val[2] & 0x80)
+        if (dht22_val[2] & 0x80)
             f *= -1;
         printf("Temp =  %.1f *C, Hum = %.1f %% \n", f, h);
         return 1;
@@ -81,15 +77,14 @@ int main(void)
     int attempts = ATTEMPTS;
     if (wiringPiSetup() == -1)
         exit(1);
-    while (attempts)
-    {                                   //you have 5 times to retry
-        int success = dht11_read_val(); //get result including printing out
-        if (success)
-        { //if get result, quit program; if not, retry 5 times then quit
+    while (attempts--)
+    {
+        int res = dht11_read_val(); //get result including printing out
+        if (res)
+        {
             break;
         }
-        attempts--;
-        delay(2500);
+        delay(2500); //the sensor cannot work consistently
     }
     if (attempts <= 0)
     {
