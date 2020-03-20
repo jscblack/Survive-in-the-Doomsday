@@ -1,6 +1,6 @@
 /*
  * @Author: Gehrychiang
- * @LastEditTime: 2020-03-19 22:41:38
+ * @LastEditTime: 2020-03-20 10:21:46
  * @Website: www.yilantingfeng.site
  * @E-mail: gehrychiang@aliyun.com
  */
@@ -78,13 +78,13 @@ int main()
     {
         exit(1); //fail to initialize, please to check the root
     }
-
-    for (int i = 0; i < 5;)
+    int dht22_read_times = 5;
+    while (dht22_read_times > 0)
     {
         int res = dht22_read_val();
         if (res)
         {
-            i++;
+            dht22_read_times--;
         }
         delay(2500); //accord to the doc,not recommend to read with an interval less than 2s
     }
