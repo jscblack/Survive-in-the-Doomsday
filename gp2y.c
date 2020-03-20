@@ -1,6 +1,6 @@
 /*
  * @Author: Gehrychiang
- * @LastEditTime: 2020-03-20 22:52:50
+ * @LastEditTime: 2020-03-20 23:03:18
  * @Website: www.yilantingfeng.site
  * @E-mail: gehrychiang@aliyun.com
  */
@@ -19,7 +19,7 @@ float dust_measure(int ledpin, int measurepin)
     digitalWrite(ledpin, LOW);
     delayMicroseconds(280);
 
-    voMeasured = analogRead(measurepin);
+    voMeasured = analogRead(70 + measurepin);
     delayMicroseconds(40);
     digitalWrite(ledpin, HIGH);
     delayMicroseconds(40);
@@ -34,8 +34,15 @@ int main()
     ads1115Setup(70, 0x48);
     int ledpin = 4;
     int measurepin = 0;
+    float sum = 0;
+    int trys = 10;
     pinMode(ledpin, OUTPUT);
-    digitalWrite(ledpin, HIGH);
-    printf("%f", dust_measure(ledpin, measurepin));
+    while (trys--)
+    {
+        digitalWrite(ledpin, HIGH);
+        sum += (1000 * dust_measure(ledpin, measurepin));
+        delay(1000);
+    }
+    printf("avg=%f\n", sum / trys);
     return 0;
 }
