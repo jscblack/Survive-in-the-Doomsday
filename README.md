@@ -4,7 +4,10 @@
  * @Website: www.yilantingfeng.site
  * @E-mail: gehrychiang@aliyun.com
  -->
-末日生存装置（误）
-一套基于树莓派的环境信息一体机
-upd 2020.3.19
-dht22成功上线
+# 末日生存装置（误）
+## 一套基于树莓派的环境信息一体机
+
+#### upd 2020.3.19
+#### dht22成功上线
+
+## MIT License
