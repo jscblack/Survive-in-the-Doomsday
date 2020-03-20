@@ -1,6 +1,6 @@
 /*
  * @Author: Gehrychiang
- * @LastEditTime: 2020-03-20 10:21:46
+ * @LastEditTime: 2020-03-20 21:49:37
  * @Website: www.yilantingfeng.site
  * @E-mail: gehrychiang@aliyun.com
  */
@@ -25,7 +25,7 @@ int dht22_read_val()
     digitalWrite(dht22, LOW); //set to low at least 1ms
     delay(1);
     digitalWrite(dht22, HIGH); //set to high 20-30us
-    delayMicroseconds(25);
+    delayMicroseconds(30);
 
     //start recieve dht response
     pinMode(dht22, INPUT); //set pin to input
@@ -85,6 +85,10 @@ int main()
         if (res)
         {
             dht22_read_times--;
+        }
+        if (dht22_read_times == 0)
+        {
+            break;
         }
         delay(2500); //accord to the doc,not recommend to read with an interval less than 2s
     }
