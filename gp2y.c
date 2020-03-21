@@ -1,6 +1,6 @@
 /*
  * @Author: Gehrychiang
- * @LastEditTime: 2020-03-20 23:05:46
+ * @LastEditTime: 2020-03-21 18:08:02
  * @Website: www.yilantingfeng.site
  * @E-mail: gehrychiang@aliyun.com
  */
@@ -40,9 +40,8 @@ int main()
     while (trys--)
     {
         digitalWrite(ledpin, HIGH);
-        sum += dust_measure(ledpin, measurepin);
+        printf("%f\n", dust_measure(ledpin, measurepin));
         delay(1000);
     }
-    printf("avg=%f\n", sum * 1000 / trys);
     return 0;
 }
